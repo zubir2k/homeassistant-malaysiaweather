@@ -1,5 +1,4 @@
-# ⛅ Malaysia Weather Integration
-![metmalaysia](https://user-images.githubusercontent.com/1905339/221524236-022f5460-1e30-4c00-81a8-a9560d36a668.png) \
+![metmalaysia](https://github.com/user-attachments/assets/81294c76-a9f0-45f8-947b-615f9d89c67d) \
 [![hacs_badge](https://img.shields.io/badge/HACS-Integration-41BDF5.svg)](https://github.com/hacs/integration)
 ![GitHub all releases](https://img.shields.io/badge/dynamic/json?color=41BDF5&logo=home-assistant&label=Download%20Count&suffix=%20installs&cacheSeconds=15600&url=https://analytics.home-assistant.io/custom_integrations.json&query=$.malaysia_weather.total)
 [![Buy](https://img.shields.io/badge/Belanja-Coffee-yellow.svg)](https://zubirco.de/buymecoffee)
@@ -40,6 +39,10 @@
 > 3. Search for `Malaysia Weather`
 > 4. Select the location that you wish add
 > 5. Weather sensor will be created along with Earthquake and Warning
+
+## Main Contributors
+- [Dr. Yusri Salleh](https://github.com/kucau0901)
+- [Zubir Jamal](https://github.com/zubir2k)
 
 ## Credits
 ![logo](https://github.com/user-attachments/assets/eb467f55-6cb9-4420-ab5e-7bdd3b28be9c) Data provided by MET Malaysia via [data.gov.my](https://data.gov.my/)
