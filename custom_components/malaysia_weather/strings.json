@@ -1,0 +1,44 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Malaysia Weather",
+                "description": "Set up Malaysia Weather integration. This will create the Warnings section.",
+                "data": {}
+            },
+            "location": {
+                "title": "Add Weather Location",
+                "description": "Choose a location to add weather information.",
+                "data": {
+                    "location_id": "Location"
+                }
+            }
+        },
+        "error": {
+            "invalid_location": "Invalid location selected",
+            "unknown": "Unexpected error occurred"
+        },
+        "abort": {
+            "already_configured": "Location is already configured",
+            "cannot_configure": "Cannot configure Warnings section. You can only delete it."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Update Malaysia Weather Location",
+                "description": "Choose a new location for your weather data.",
+                "data": {
+                    "location_id": "Location"
+                }
+            }
+        },
+        "error": {
+            "invalid_location": "Invalid location selected",
+            "unknown": "Unexpected error occurred"
+        },
+        "abort": {
+            "cannot_configure": "Cannot configure Warnings section. You can only delete it."
+        }
+    }
+}

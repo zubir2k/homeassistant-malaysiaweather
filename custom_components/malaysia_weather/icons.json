@@ -1,0 +1,14 @@
+{
+  "entity": {
+    "weather": {
+      "state": {
+        "sunny": "mdi:weather-sunny",
+        "rainy": "mdi:weather-rainy",
+        "fog": "mdi:weather-fog",
+        "lightning-rainy": "mdi:weather-lightning-rainy",
+        "unknown": "mdi:weather-partly-cloudy"
+      }
+    }
+  },
+  "brand": "mdi:weather-partly-cloudy"
+}
