@@ -14,7 +14,7 @@ from homeassistant.components.weather import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
-    TEMP_CELSIUS,
+    UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -69,7 +69,7 @@ class MalaysiaWeather(CoordinatorEntity, WeatherEntity):
     """Implementation of Malaysia Weather."""
 
     _attr_has_entity_name = True
-    _attr_native_temperature_unit = TEMP_CELSIUS
+    _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_supported_features = WeatherEntityFeature.FORECAST_DAILY
     _attr_attribution = ATTRIBUTION
 
