@@ -40,13 +40,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     ) -> FlowResult:
         """Handle adding a weather location."""
         errors = {}
-
+    
         if user_input is not None:
             try:
                 # Check if location is already configured
                 await self.async_set_unique_id(user_input[CONF_LOCATION_ID])
                 self._abort_if_unique_id_configured()
-
+    
                 # Validate the location exists
                 async with aiohttp.ClientSession() as session:
                     async with session.get(
@@ -68,12 +68,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_LOCATION_NAME: location_name,
                     },
                 )
+            except config_entries.ConfigEntryNotReady:
+                errors["base"] = "location_already_configured"
             except InvalidLocation:
                 errors["base"] = "invalid_location"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
-
+    
         # Get available locations from API
         locations = await self._async_get_locations()
         
@@ -89,6 +91,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def _async_get_locations() -> dict[str, str]:
         """Get available locations from the API."""
         locations = {}
+        seen_location_names = set()
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(FORECAST_URL) as response:
@@ -97,14 +100,23 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         for item in data:
                             location_id = item["location"]["location_id"]
                             location_name = item["location"]["location_name"].split(" (")[0]
-                            locations[location_id] = location_name
+                            if location_name not in seen_location_names:
+                                seen_location_names.add(location_name)
+                                locations[location_id] = location_name
         except Exception:  # pylint: disable=broad-except
             _LOGGER.exception("Error fetching locations")
        
+        # 5/1/25 - Clean up any existing duplicates in the locations dictionary
+        cleaned_locations = {}
+        seen_location_names = set()
+        for location_id, location_name in locations.items():
+            if location_name not in seen_location_names:
+                seen_location_names.add(location_name)
+                cleaned_locations[location_id] = location_name
+    
         # 5/1/25 - Sort locations alphabetically by name
         sorted_locations = dict(sorted(locations.items(), key=lambda x: x[1]))
         return sorted_locations        
-        # return locations
     
     @staticmethod
     @callback
