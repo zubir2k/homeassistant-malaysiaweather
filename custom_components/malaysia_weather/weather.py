@@ -41,6 +41,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up Malaysia Weather platform."""
+    # Skip setup for the warnings entry (empty data)
+    if not config_entry.data:
+        return
+
     location_id = config_entry.data[CONF_LOCATION_ID]
     location_name = config_entry.data[CONF_LOCATION_NAME]
 
