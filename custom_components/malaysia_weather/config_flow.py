@@ -100,9 +100,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             locations[location_id] = location_name
         except Exception:  # pylint: disable=broad-except
             _LOGGER.exception("Error fetching locations")
-        
-        return locations
-
+       
+        # 5/1/25 - Sort locations alphabetically by name
+        sorted_locations = dict(sorted(locations.items(), key=lambda x: x[1]))
+        return sorted_locations        
+        # return locations
+    
     @staticmethod
     @callback
     def async_get_options_flow(
