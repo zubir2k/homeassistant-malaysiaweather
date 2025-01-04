@@ -34,11 +34,16 @@
 
 > [!Tip]
 > If you are unable to use the button above, follow the steps below:
-> 1. Navigate to the Home Assistant Integrations page (Settings --> Devices & Services)
-> 2. Click the `+ ADD INTEGRATION` button in the lower right-hand corner
-> 3. Search for `Malaysia Weather`
-> 4. Select the location that you wish add
-> 5. Weather sensor will be created along with Earthquake and Warning
+> 1. Navigate to the Home Assistant Integrations page (Settings --> Devices & Services).
+> 2. Click the `+ ADD INTEGRATION` button in the lower right-hand corner.
+> 3. Search for `Malaysia Weather`.
+> 4. The integration will create `Earthquake` and `Warning` sensors.
+> 5. Next, continue by clicking the `Add Service` button.
+> 6. Select the location that you wish add (location are sorted alphabetically).
+> 7. Weather sensor will be created based on the location that you have chosen.
+> 8. You may also continue adding another location by clicking the `Add Service` button.
+
+![image](https://github.com/user-attachments/assets/203852af-094c-45a5-9f77-151a31d42969)
 
 ## Main Contributors
 - [Dr. Yusri Salleh](https://github.com/kucau0901)
