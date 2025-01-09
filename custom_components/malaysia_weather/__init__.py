@@ -7,7 +7,7 @@ from homeassistant.const import Platform
 
 from .const import DOMAIN
 
-PLATFORMS: list[Platform] = [Platform.WEATHER, Platform.SENSOR]
+PLATFORMS: list[Platform] = [Platform.WEATHER, Platform.SENSOR, Platform.SELECT, Platform.IMAGE]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Malaysia Weather from a config entry."""

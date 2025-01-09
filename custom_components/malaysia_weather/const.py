@@ -11,6 +11,13 @@ FORECAST_URL: Final = "https://api.data.gov.my/weather/forecast"
 WARNING_URL: Final = "https://api.data.gov.my/weather/warning"
 EARTHQUAKE_URL: Final = "https://api.data.gov.my/weather/warning/earthquake"
 
+SATELLITE_URLS = {
+    "Satellite": "https://api.met.gov.my/static/images/satelit-latest.gif",
+    "Radar": "https://api.met.gov.my/static/images/radar-latest.gif",
+    "SWIRL": "https://api.met.gov.my/static/images/swirl-latest.gif",
+    "Thunderstorm Warning": "https://www.met.gov.my/data/AmaranRibutPetir.jpg",
+}
+
 # Default icon
 DEFAULT_ICON = "mdi:weather-partly-cloudy"
 
