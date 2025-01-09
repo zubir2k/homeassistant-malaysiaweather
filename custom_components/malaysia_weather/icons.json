@@ -1,13 +1,8 @@
 {
-  "entity": {
-    "weather": {
-      "state": {
-        "sunny": "mdi:weather-sunny",
-        "rainy": "mdi:weather-rainy",
-        "fog": "mdi:weather-fog",
-        "lightning-rainy": "mdi:weather-lightning-rainy",
-        "unknown": "mdi:weather-partly-cloudy"
-      }
+    "domain": "malaysia_weather",
+    "entity": {
+        "weather": {
+            "default": "mdi:weather-partly-cloudy"
+        }
     }
-  }
 }
