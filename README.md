@@ -8,7 +8,7 @@
 - Multiple Location supported
 - Earthquake sensor
 - Warning sensor
-- Satellite Imagery (as image and select entity)
+- Satellite Imagery (as image entity and select entity)
 
 > [!Tip]
 > 1. This integration provides ONLY weekly data (7 days) at the moment
