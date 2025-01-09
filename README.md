@@ -8,11 +8,17 @@
 - Multiple Location supported
 - Earthquake sensor
 - Warning sensor
+- Satellite Imagery (as image and select entity)
 
 > [!Tip]
-> This integration provides ONLY weekly data (7 days) at the moment
+> 1. This integration provides ONLY weekly data (7 days) at the moment
+> 2. For imagery, you may use `picture card` for individual image or use `markdown card` for dynamic image switching
+>
+> ```yaml
+> ![image]({{state_attr('select.satellite_imagery', 'url')}})
+> ```
 
-![image](https://github.com/user-attachments/assets/b712ea13-ebc3-4813-b6b8-1e1049e7165e)
+![image](https://github.com/user-attachments/assets/78fe17df-0655-4b6e-a33c-e5b1ce12b949)
 
 ## Installation
 #### With HACS
@@ -37,13 +43,13 @@
 > 1. Navigate to the Home Assistant Integrations page (Settings --> Devices & Services).
 > 2. Click the `+ ADD INTEGRATION` button in the lower right-hand corner.
 > 3. Search for `Malaysia Weather`.
-> 4. The integration will create `Earthquake` and `Warning` sensors.
+> 4. The integration will first create `Warnings & Imagery`.
 > 5. Next, continue by clicking the `Add Service` button.
 > 6. Select the location that you wish add (location are sorted alphabetically).
 > 7. Weather sensor will be created based on the location that you have chosen.
 > 8. You may also continue adding another location by clicking the `Add Service` button.
 
-![image](https://github.com/user-attachments/assets/203852af-094c-45a5-9f77-151a31d42969)
+![image](https://github.com/user-attachments/assets/9939a9dd-2dad-4b30-99c5-1d3f52022042)
 
 ## Main Contributors
 - [Dr. Yusri Salleh](https://github.com/kucau0901)
