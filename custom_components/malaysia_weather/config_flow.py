@@ -31,7 +31,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         # Create warnings entry first
         return self.async_create_entry(
-            title="Warnings",
+            title="Warnings & Imagery",
             data={},
         )
 
