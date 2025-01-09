@@ -1,8 +1,9 @@
 {
-    "domain": "malaysia_weather",
     "entity": {
         "weather": {
-            "default": "mdi:weather-partly-cloudy"
+            "default": {
+                "icon": "mdi:weather-partly-cloudy"
+            }
         }
     }
 }
