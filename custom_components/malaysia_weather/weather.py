@@ -130,7 +130,7 @@ class MalaysiaWeather(CoordinatorEntity, WeatherEntity):
                 forecast_data.append({
                     "datetime": datetime.strptime(
                         daily_data["date"], "%Y-%m-%d"
-                    ).date(),
+                    ).isoformat(),
                     "native_temperature": float(daily_data["max_temp"]),
                     "native_templow": float(daily_data["min_temp"]),
                     "condition": CONDITION_MAPPING.get(
@@ -140,5 +140,5 @@ class MalaysiaWeather(CoordinatorEntity, WeatherEntity):
             except (KeyError, ValueError) as err:
                 _LOGGER.error("Error parsing forecast data: %s", err)
                 continue
-
-        return forecast_data
+                
+        return sorted(forecast_data, key=lambda x: x["datetime"])
