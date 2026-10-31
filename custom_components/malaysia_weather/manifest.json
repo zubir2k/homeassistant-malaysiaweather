@@ -1,14 +1,20 @@
 {
   "domain": "malaysia_weather",
   "name": "Malaysia Weather",
-  "categories": ["weather_alerts.forecasts", "weather_alerts.public_warnings"],
-  "codeowners": ["@kucau0901", "@zubir2k"],
+  "categories": [
+    "weather_alerts.forecasts",
+    "weather_alerts.public_warnings"
+  ],
+  "codeowners": [
+    "@kucau0901",
+    "@zubir2k"
+  ],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/zubir2k/homeassistant-malaysiaweather",
   "integration_type": "service",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/zubir2k/homeassistant-malaysiaweather/issues",
-  "requirements": ["aiohttp"],
-  "version": "1.0.5"
+  "requirements": [],
+  "version": "1.1.0"
 }
