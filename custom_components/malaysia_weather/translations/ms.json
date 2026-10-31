@@ -1,0 +1,108 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Cuaca Malaysia",
+        "description": "Sediakan Cuaca Malaysia. Langkah pertama mencipta entri Amaran & Imejan seluruh negara.",
+        "data": {}
+      },
+      "location": {
+        "title": "Tambah lokasi cuaca",
+        "description": "Pilih lokasi untuk ramalan 7 hari. Anda boleh menambah kunci API MET Malaysia untuk ramalan dalam Bahasa Inggeris, negeri, koordinat dan, jika diberi kebenaran oleh MET, cerapan semasa.",
+        "data": {
+          "location_id": "Lokasi",
+          "api_key": "Kunci API MET (pilihan)"
+        },
+        "data_description": {
+          "api_key": "Token daripada api.met.gov.my. Biarkan kosong untuk menggunakan data.gov.my sahaja."
+        }
+      }
+    },
+    "error": {
+      "invalid_location": "Lokasi tidak sah",
+      "unknown": "Ralat tidak dijangka",
+      "invalid_api_key": "MET Malaysia menolak kunci API ini",
+      "cannot_connect": "Tidak dapat menghubungi MET Malaysia untuk menyemak kunci API. Cuba sebentar lagi."
+    },
+    "abort": {
+      "already_configured": "Lokasi ini sudah ditambah",
+      "cannot_connect": "Tidak dapat menghubungi data.gov.my. Cuba sebentar lagi.",
+      "cannot_configure": "Entri Amaran & Imejan tiada pilihan. Anda hanya boleh memadamnya."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Lokasi dan kunci API MET",
+        "description": "Pilih lokasi untuk ramalan ini, dan tambah, tukar atau buang kunci API MET Malaysia jika perlu.",
+        "data": {
+          "location_id": "Lokasi",
+          "api_key": "Kunci API MET (pilihan)"
+        },
+        "data_description": {
+          "api_key": "Token daripada api.met.gov.my. Kosongkan untuk kembali kepada data.gov.my sahaja."
+        }
+      },
+      "marine": {
+        "title": "Kawasan marin",
+        "description": "Pilih kawasan marin MET jika mahu menambah angin laut dan ketinggian ombak hari ini pada entiti cuaca ini.",
+        "data": {
+          "marine_area": "Kawasan marin (pilihan)"
+        },
+        "data_description": {
+          "marine_area": "Pilih — untuk tiada."
+        }
+      }
+    },
+    "error": {
+      "invalid_location": "Lokasi tidak sah",
+      "location_already_configured": "Lokasi itu sudah ditambah sebagai entri lain",
+      "unknown": "Ralat tidak dijangka",
+      "invalid_api_key": "MET Malaysia menolak kunci API ini",
+      "cannot_connect": "Tidak dapat menghubungi MET Malaysia untuk menyemak kunci API. Cuba sebentar lagi."
+    },
+    "abort": {
+      "cannot_connect": "Tidak dapat menghubungi data.gov.my. Cuba sebentar lagi.",
+      "cannot_configure": "Entri Amaran & Imejan tiada pilihan. Anda hanya boleh memadamnya."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "weather_warning": {
+        "name": "Amaran cuaca"
+      },
+      "earthquake_warning": {
+        "name": "Amaran gempa bumi"
+      }
+    },
+    "select": {
+      "satellite_imagery": {
+        "name": "Imejan satelit"
+      }
+    },
+    "image": {
+      "satellite": {
+        "name": "Satelit"
+      },
+      "radar": {
+        "name": "Radar"
+      },
+      "swirl": {
+        "name": "SWIRL"
+      },
+      "thunderstorm_warning": {
+        "name": "Amaran ribut petir"
+      }
+    }
+  },
+  "issues": {
+    "met_api_key_invalid": {
+      "title": "Kunci API MET untuk {location} tidak berfungsi",
+      "description": "MET Malaysia menolak kunci API yang digunakan oleh ramalan {location}. Ramalan masih berfungsi daripada data.gov.my, tetapi maklumat tambahan MET dimatikan.\n\nPergi ke **Tetapan > Peranti & perkhidmatan > Malaysia Weather**, buka **{location}**, pilih **Konfigurasi**, dan masukkan kunci baharu atau kosongkannya."
+    },
+    "met_unavailable": {
+      "title": "MET Malaysia tidak bertindak balas untuk {location}",
+      "description": "Beberapa permintaan ke API MET Malaysia gagal berturut-turut. Ramalan {location} masih berfungsi daripada data.gov.my; maklumat tambahan MET akan kembali sendiri apabila MET pulih. Jika berterusan, semak kunci di **Tetapan > Peranti & perkhidmatan > Malaysia Weather > {location} > Konfigurasi**."
+    }
+  }
+}

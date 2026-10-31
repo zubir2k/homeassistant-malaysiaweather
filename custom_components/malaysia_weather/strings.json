@@ -1,44 +1,108 @@
 {
-    "config": {
-        "step": {
-            "user": {
-                "title": "Malaysia Weather",
-                "description": "Set up Malaysia Weather integration. This will create the Warnings section.",
-                "data": {}
-            },
-            "location": {
-                "title": "Add Weather Location",
-                "description": "Choose a location to add weather information.",
-                "data": {
-                    "location_id": "Location"
-                }
-            }
+  "config": {
+    "step": {
+      "user": {
+        "title": "Malaysia Weather",
+        "description": "Set up Malaysia Weather. This first creates the nationwide Warnings & Imagery entry.",
+        "data": {}
+      },
+      "location": {
+        "title": "Add weather location",
+        "description": "Choose a location to add its 7-day forecast. Optionally add a MET Malaysia API key for English forecasts, the state, coordinates and, if MET granted it, live observations.",
+        "data": {
+          "location_id": "Location",
+          "api_key": "MET API key (optional)"
         },
-        "error": {
-            "invalid_location": "Invalid location selected",
-            "unknown": "Unexpected error occurred"
-        },
-        "abort": {
-            "already_configured": "Location is already configured",
-            "cannot_configure": "Cannot configure Warnings section. You can only delete it."
+        "data_description": {
+          "api_key": "Token from api.met.gov.my. Leave empty to use data.gov.my only."
         }
+      }
     },
-    "options": {
-        "step": {
-            "init": {
-                "title": "Update Malaysia Weather Location",
-                "description": "Choose a new location for your weather data.",
-                "data": {
-                    "location_id": "Location"
-                }
-            }
-        },
-        "error": {
-            "invalid_location": "Invalid location selected",
-            "unknown": "Unexpected error occurred"
-        },
-        "abort": {
-            "cannot_configure": "Cannot configure Warnings section. You can only delete it."
-        }
+    "error": {
+      "invalid_location": "Invalid location selected",
+      "unknown": "Unexpected error occurred",
+      "invalid_api_key": "MET Malaysia rejected this API key",
+      "cannot_connect": "Could not reach MET Malaysia to check the API key. Try again later."
+    },
+    "abort": {
+      "already_configured": "This location is already configured",
+      "cannot_connect": "Could not reach data.gov.my. Try again later.",
+      "cannot_configure": "The Warnings & Imagery entry has no options. You can only delete it."
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Location and MET API key",
+        "description": "Choose the location for this forecast, and optionally add, change or remove the MET Malaysia API key.",
+        "data": {
+          "location_id": "Location",
+          "api_key": "MET API key (optional)"
+        },
+        "data_description": {
+          "api_key": "Token from api.met.gov.my. Clear it to go back to data.gov.my only."
+        }
+      },
+      "marine": {
+        "title": "Marine area",
+        "description": "Optionally pick a MET marine area to add today's sea wind and wave height to this weather entity.",
+        "data": {
+          "marine_area": "Marine area (optional)"
+        },
+        "data_description": {
+          "marine_area": "Choose — for none."
+        }
+      }
+    },
+    "error": {
+      "invalid_location": "Invalid location selected",
+      "location_already_configured": "That location is already set up as another entry",
+      "unknown": "Unexpected error occurred",
+      "invalid_api_key": "MET Malaysia rejected this API key",
+      "cannot_connect": "Could not reach MET Malaysia to check the API key. Try again later."
+    },
+    "abort": {
+      "cannot_connect": "Could not reach data.gov.my. Try again later.",
+      "cannot_configure": "The Warnings & Imagery entry has no options. You can only delete it."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "weather_warning": {
+        "name": "Weather warning"
+      },
+      "earthquake_warning": {
+        "name": "Earthquake warning"
+      }
+    },
+    "select": {
+      "satellite_imagery": {
+        "name": "Satellite imagery"
+      }
+    },
+    "image": {
+      "satellite": {
+        "name": "Satellite"
+      },
+      "radar": {
+        "name": "Radar"
+      },
+      "swirl": {
+        "name": "SWIRL"
+      },
+      "thunderstorm_warning": {
+        "name": "Thunderstorm warning"
+      }
+    }
+  },
+  "issues": {
+    "met_api_key_invalid": {
+      "title": "MET API key for {location} is not working",
+      "description": "MET Malaysia rejected the API key used by the {location} forecast. The forecast keeps working from data.gov.my, but the MET extras are off.\n\nGo to **Settings > Devices & services > Malaysia Weather**, open **{location}**, select **Configure**, and enter a new key or clear it."
+    },
+    "met_unavailable": {
+      "title": "MET Malaysia is not responding for {location}",
+      "description": "Several requests to the MET Malaysia API failed in a row. The {location} forecast keeps working from data.gov.my; the MET extras come back on their own when MET recovers. If it continues, check the key under **Settings > Devices & services > Malaysia Weather > {location} > Configure**."
+    }
+  }
 }

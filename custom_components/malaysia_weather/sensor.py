@@ -1,155 +1,111 @@
 """Sensor platform for Malaysia Weather integration."""
 from __future__ import annotations
 
-from datetime import timedelta
-import logging
+from typing import Any
 
-import aiohttp
-import async_timeout
-
-from homeassistant.components.sensor import (
-    SensorEntity,
-    SensorDeviceClass,
-)
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.components.select import SelectEntity
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.update_coordinator import (
-    CoordinatorEntity,
-    DataUpdateCoordinator,
-)
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import (
-    DOMAIN,
-    WARNING_URL,
-    EARTHQUAKE_URL,
-    UPDATE_INTERVAL_WARNINGS,
-    ATTRIBUTION,
+from .const import ATTRIBUTION
+from .coordinator import (
+    MalaysiaWeatherConfigEntry,
+    MalaysiaWeatherCoordinator,
+    WarningsRuntimeData,
 )
+from .entity import warnings_device_info
 
-_LOGGER = logging.getLogger(__name__)
+PARALLEL_UPDATES = 0
+
+
+def _to_float(value: Any) -> float | None:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: MalaysiaWeatherConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Malaysia Weather warning sensors."""
-    # Only set up warning sensors for the warnings entry (empty data)
-    if entry.data:
+    """Set up warning sensors for the Warnings & Imagery entry."""
+    runtime = entry.runtime_data
+    if not isinstance(runtime, WarningsRuntimeData):
         return
-
-    warning_coordinator = DataUpdateCoordinator(
-        hass,
-        _LOGGER,
-        name="malaysia_weather_warnings",
-        update_method=fetch_warning_data,
-        update_interval=timedelta(seconds=UPDATE_INTERVAL_WARNINGS),
+    async_add_entities(
+        [
+            WeatherWarningSensor(runtime.warnings, entry),
+            EarthquakeWarningSensor(runtime.earthquake, entry),
+        ]
     )
 
-    earthquake_coordinator = DataUpdateCoordinator(
-        hass,
-        _LOGGER,
-        name="malaysia_weather_earthquake",
-        update_method=fetch_earthquake_data,
-        update_interval=timedelta(seconds=UPDATE_INTERVAL_WARNINGS),
-    )
 
-    await warning_coordinator.async_config_entry_first_refresh()
-    await earthquake_coordinator.async_config_entry_first_refresh()
-
-    async_add_entities([
-        WeatherWarningSensor(warning_coordinator),
-        EarthquakeWarningSensor(earthquake_coordinator)
-    ])
-
-async def fetch_warning_data() -> dict:
-    """Fetch warning data from API."""
-    async with async_timeout.timeout(10):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(WARNING_URL) as response:
-                return await response.json()
-
-async def fetch_earthquake_data() -> dict:
-    """Fetch earthquake data from API."""
-    async with async_timeout.timeout(10):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(EARTHQUAKE_URL) as response:
-                return await response.json()
-
-class WeatherWarningSensor(CoordinatorEntity, SensorEntity):
-    """Implementation of Malaysia Weather Warning sensor."""
+class _WarningsSensor(CoordinatorEntity[MalaysiaWeatherCoordinator], SensorEntity):
+    """Base for the nationwide warning sensors."""
 
     _attr_has_entity_name = True
-    _attr_name = "Weather Warning"
-    _attr_device_class = SensorDeviceClass.ENUM
     _attr_attribution = ATTRIBUTION
 
-    def __init__(self, coordinator: DataUpdateCoordinator) -> None:
-        """Initialize the sensor."""
+    def __init__(self, coordinator: MalaysiaWeatherCoordinator, entry: MalaysiaWeatherConfigEntry) -> None:
         super().__init__(coordinator)
-        self._attr_unique_id = "malaysia_weather_warning"
+        self._attr_device_info = warnings_device_info(entry)
+
+    @property
+    def _latest(self) -> dict[str, Any] | None:
+        data = self.coordinator.data
+        return data[0] if data else None
+
+
+class WeatherWarningSensor(_WarningsSensor):
+    """Latest MET weather warning."""
+
+    _attr_translation_key = "weather_warning"
+    _attr_unique_id = "malaysia_weather_warning"  # unchanged from v1.0.x
 
     @property
     def native_value(self) -> str | None:
-        """Return the state of the sensor."""
-        if not self.coordinator.data:
-            return None
-        try:
-            return self.coordinator.data[0]["heading_en"]
-        except (KeyError, IndexError):
-            return None
+        latest = self._latest
+        heading = latest.get("heading_en") if latest else None
+        return heading[:255] if heading else None
 
     @property
-    def extra_state_attributes(self) -> dict:
-        """Return additional warning information."""
-        if not self.coordinator.data or not self.coordinator.data[0]:
+    def extra_state_attributes(self) -> dict[str, Any]:
+        latest = self._latest
+        if not latest:
             return {}
-        
-        warning = self.coordinator.data[0]
         return {
-            "valid_from": warning.get("valid_from"),
-            "valid_to": warning.get("valid_to"),
-            "text": warning.get("text_en"),
-            "instruction": warning.get("instruction_en"),
+            "valid_from": latest.get("valid_from"),
+            "valid_to": latest.get("valid_to"),
+            "text": latest.get("text_en"),
+            "instruction": latest.get("instruction_en"),
+            "heading_bm": latest.get("heading_bm"),
+            "text_bm": latest.get("text_bm"),
         }
 
-class EarthquakeWarningSensor(CoordinatorEntity, SensorEntity):
-    """Implementation of Malaysia Earthquake Warning sensor."""
 
-    _attr_has_entity_name = True
-    _attr_name = "Earthquake Warning"
-    _attr_device_class = SensorDeviceClass.ENUM
-    _attr_attribution = ATTRIBUTION
+class EarthquakeWarningSensor(_WarningsSensor):
+    """Latest MET earthquake report."""
 
-    def __init__(self, coordinator: DataUpdateCoordinator) -> None:
-        """Initialize the sensor."""
-        super().__init__(coordinator)
-        self._attr_unique_id = "malaysia_earthquake_warning"
+    _attr_translation_key = "earthquake_warning"
+    _attr_unique_id = "malaysia_earthquake_warning"  # unchanged from v1.0.x
 
     @property
     def native_value(self) -> str | None:
-        """Return the state of the sensor."""
-        if not self.coordinator.data:
-            return None
-        try:
-            return self.coordinator.data[0]["status"]
-        except (KeyError, IndexError):
-            return None
+        latest = self._latest
+        return latest.get("status") if latest else None
 
     @property
-    def extra_state_attributes(self) -> dict:
-        """Return additional earthquake information."""
-        if not self.coordinator.data or not self.coordinator.data[0]:
+    def extra_state_attributes(self) -> dict[str, Any]:
+        latest = self._latest
+        if not latest:
             return {}
-        
-        quake = self.coordinator.data[0]
         return {
-            "magnitude": quake.get("magdefault"),
-            "depth": quake.get("depth"),
-            "location": quake.get("location_original"),
-            "distance_from_malaysia": quake.get("n_distancemas"),
-            "datetime": quake.get("localdatetime"),
+            "magnitude": _to_float(latest.get("magdefault")),
+            "depth": _to_float(latest.get("depth")),
+            "location": latest.get("location_original"),
+            "distance_from_malaysia": latest.get("n_distancemas"),
+            "datetime": latest.get("localdatetime"),
         }

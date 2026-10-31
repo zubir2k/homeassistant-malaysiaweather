@@ -1,97 +1,79 @@
 """Image platform for Malaysia Weather integration."""
 from __future__ import annotations
-import asyncio
-from datetime import timedelta
-import logging
-import aiohttp
 
 from homeassistant.components.image import ImageEntity
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.util import dt as dt_util
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.event import async_track_time_interval
-from .const import DOMAIN, SATELLITE_URLS
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import dt as dt_util
 
-_LOGGER = logging.getLogger(__name__)
+from .coordinator import ImageryCoordinator, MalaysiaWeatherConfigEntry, WarningsRuntimeData
+from .entity import warnings_device_info
 
-SCAN_INTERVAL = timedelta(minutes=5)
+PARALLEL_UPDATES = 0
+
+TRANSLATION_KEYS = {
+    "Satellite": "satellite",
+    "Radar": "radar",
+    "SWIRL": "swirl",
+    "Thunderstorm Warning": "thunderstorm_warning",
+}
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: MalaysiaWeatherConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Malaysia Weather image entities."""
-    if entry.data:
+    """Set up the MET imagery entities."""
+    runtime = entry.runtime_data
+    if not isinstance(runtime, WarningsRuntimeData):
         return
+    async_add_entities(
+        WeatherImageEntity(hass, coordinator, name, entry)
+        for name, coordinator in runtime.imagery.items()
+    )
 
-    entities = []
-    for name, url in SATELLITE_URLS.items():
-        entities.append(WeatherImageEntity(hass, name, url))
 
-    async_add_entities(entities) 
+class WeatherImageEntity(CoordinatorEntity[ImageryCoordinator], ImageEntity):
+    """One MET imagery feed (satellite, radar, SWIRL, thunderstorm)."""
 
-class WeatherImageEntity(ImageEntity):
-    """Representation of a Weather Image entity."""
+    _attr_has_entity_name = True
 
-    def __init__(self, hass: HomeAssistant, name: str, url: str) -> None:
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        coordinator: ImageryCoordinator,
+        name: str,
+        entry: MalaysiaWeatherConfigEntry,
+    ) -> None:
         """Initialize the image entity."""
-        super().__init__(hass)
-        self._attr_has_entity_name = True
-        self._attr_name = name
+        CoordinatorEntity.__init__(self, coordinator)
+        ImageEntity.__init__(self, hass)
+        self._attr_translation_key = TRANSLATION_KEYS[name]
+        # Unchanged from v1.0.x so existing entity IDs are kept
         self._attr_unique_id = f"malaysia_weather_{name.lower().replace(' ', '_')}"
-        self._attr_image_url = url
-        self._attr_content_type = "image/gif" if url.endswith(".gif") else "image/jpeg"
-        self._cached_image: bytes | None = None
-        self._last_etag: str | None = None
-
-    async def async_added_to_hass(self) -> None:
-        """Start polling when entity is added."""
-        await super().async_added_to_hass()
-        await self._fetch_image()
-        # Schedule periodic polling
-        self._unsub = async_track_time_interval(
-            self.hass, self._handle_interval, SCAN_INTERVAL
+        self._attr_content_type = (
+            "image/gif" if coordinator.url.endswith(".gif") else "image/jpeg"
         )
+        self._attr_device_info = warnings_device_info(entry)
+        self._fingerprint: str | None = None
+        self._update_from_coordinator()
 
-    async def async_will_remove_from_hass(self) -> None:
-        """Stop polling when entity is removed."""
-        if hasattr(self, "_unsub"):
-            self._unsub()
+    @callback
+    def _update_from_coordinator(self) -> None:
+        data = self.coordinator.data
+        if data and data.fingerprint != self._fingerprint:
+            self._fingerprint = data.fingerprint
+            self._attr_image_last_updated = dt_util.utcnow()
 
-    async def _handle_interval(self, now) -> None:
-        """Called on each poll interval."""
-        await self._fetch_image()
-
-    async def _fetch_image(self) -> None:
-        """Fetch the image and update state if it has changed."""
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(self._attr_image_url) as response:
-                    if response.status != 200:
-                        return
-
-                    new_etag = response.headers.get("ETag") or response.headers.get("Last-Modified")
-                    new_image = await response.read()
-
-                    changed = False
-                    if new_etag:
-                        if new_etag != self._last_etag:
-                            changed = True
-                            self._last_etag = new_etag
-                    elif new_image != self._cached_image:
-                        changed = True
-
-                    if changed or self._cached_image is None:
-                        self._cached_image = new_image
-                        self._attr_image_last_updated = dt_util.utcnow()
-                        self.async_write_ha_state()
-                        _LOGGER.debug("Image updated for %s", self._attr_name)
-
-        except Exception as err:
-            _LOGGER.error("Error fetching image for %s: %s", self._attr_name, err)
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Bump the timestamp only when the picture changed."""
+        self._update_from_coordinator()
+        super()._handle_coordinator_update()
 
     async def async_image(self) -> bytes | None:
-        """Return the cached image bytes."""
-        return self._cached_image
+        """Return the latest image bytes."""
+        data = self.coordinator.data
+        return data.content if data else None
