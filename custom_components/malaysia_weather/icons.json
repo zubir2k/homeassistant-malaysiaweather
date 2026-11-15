@@ -1,0 +1,31 @@
+{
+  "entity": {
+    "sensor": {
+      "weather_warning": {
+        "default": "mdi:alert-outline"
+      },
+      "earthquake_warning": {
+        "default": "mdi:pulse"
+      }
+    },
+    "select": {
+      "satellite_imagery": {
+        "default": "mdi:satellite-variant"
+      }
+    },
+    "image": {
+      "satellite": {
+        "default": "mdi:satellite-variant"
+      },
+      "radar": {
+        "default": "mdi:radar"
+      },
+      "swirl": {
+        "default": "mdi:weather-windy"
+      },
+      "thunderstorm_warning": {
+        "default": "mdi:weather-lightning"
+      }
+    }
+  }
+}

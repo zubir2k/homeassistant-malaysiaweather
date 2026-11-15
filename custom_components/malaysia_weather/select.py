@@ -1,6 +1,8 @@
 """Select platform for Malaysia Weather integration."""
 from __future__ import annotations
 
+from typing import Final
+
 from homeassistant.components.select import SelectEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -9,6 +11,8 @@ from homeassistant.helpers.storage import Store
 from .const import DOMAIN, SATELLITE_URLS
 from .coordinator import MalaysiaWeatherConfigEntry, WarningsRuntimeData
 from .entity import warnings_device_info
+
+PARALLEL_UPDATES: Final = 0
 
 STORAGE_KEY = f"{DOMAIN}.satellite_selection"
 STORAGE_VERSION = 1

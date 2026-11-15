@@ -36,7 +36,13 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-MET_TZ = ZoneInfo(MET_TIMEZONE)
+
+def get_met_tz() -> ZoneInfo:
+    """Return the cached MET Malaysia timezone."""
+    tz = dt_util.get_time_zone(MET_TIMEZONE)
+    return tz if isinstance(tz, ZoneInfo) else ZoneInfo(MET_TIMEZONE)
+
+
 _CACHE_KEY = f"{DOMAIN}_met_cache"
 _LIMITER_KEY = f"{DOMAIN}_met_limiter"
 # MET allows bursts of 10 requests a minute; keep one spare
@@ -82,7 +88,7 @@ class MetConnectionError(MetError):
 
 def met_today() -> date:
     """Today's date in Malaysia, whatever Home Assistant's time zone is."""
-    return dt_util.now(MET_TZ).date()
+    return dt_util.now(get_met_tz()).date()
 
 
 # "Sat 2026-10-31 7:31 AM (UTC+08:00)"
@@ -111,7 +117,7 @@ def parse_met_datetime(value: Any) -> datetime | None:
             hour += 12
         elif ampm == "AM" and hour == 12:
             hour = 0
-        tzinfo: Any = MET_TZ
+        tzinfo: Any = get_met_tz()
         if match["tz"]:
             raw = match["tz"].replace(":", "")
             sign = -1 if raw[0] == "-" else 1
@@ -538,3 +544,10 @@ def parse_observations(
         elif datatype == "PRST_WX_ID":
             data.present_weather_id = value
     return data
+
+
+def __getattr__(name: str) -> Any:
+    """Lazy module attribute fallback for MET_TZ."""
+    if name == "MET_TZ":
+        return get_met_tz()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

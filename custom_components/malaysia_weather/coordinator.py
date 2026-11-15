@@ -49,6 +49,7 @@ from .met import (
     MetForbiddenError,
     MetForecastData,
     ObservationData,
+    met_today,
     nearest_station,
     parse_forecast,
     parse_marine,
@@ -127,7 +128,7 @@ class ForecastCoordinator(MalaysiaWeatherCoordinator):
         data = await super()._async_update_data()
         if not data:
             raise UpdateFailed("No forecast returned for this location")
-        today = dt_util.now().date().isoformat()
+        today = met_today().isoformat()
         days = sorted(
             (day for day in data if isinstance(day.get("date"), str)),
             key=lambda day: day["date"],
