@@ -1,5 +1,7 @@
 {
-    "name": "Malaysia Weather",
-    "homeassistant": "2024.11.0",
-    "country": "MY"
+  "name": "Malaysia Weather",
+  "homeassistant": "2024.11.0",
+  "country": "MY",
+  "zip_release": true,
+  "filename": "malaysia_weather.zip"
 }

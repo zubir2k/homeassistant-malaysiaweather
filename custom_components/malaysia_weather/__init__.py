@@ -5,9 +5,10 @@ import logging
 
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import entity_registry as er
 
-from .const import CONF_API_KEY, CONF_LOCATION_ID, CONF_MET_OBSERVATION, SATELLITE_URLS
+from .const import CONF_API_KEY, CONF_LOCATION_ID, CONF_MET_OBSERVATION, DOMAIN, SATELLITE_URLS
 from .coordinator import (
     ForecastCoordinator,
     ImageryCoordinator,
@@ -28,6 +29,8 @@ _LOGGER = logging.getLogger(__name__)
 
 LOCATION_PLATFORMS: list[Platform] = [Platform.WEATHER]
 WARNINGS_PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SELECT, Platform.IMAGE]
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 
 def is_warnings_entry(entry: MalaysiaWeatherConfigEntry) -> bool:
