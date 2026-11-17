@@ -29,11 +29,11 @@
 ![image](https://github.com/user-attachments/assets/78fe17df-0655-4b6e-a33c-e5b1ce12b949)
 
 ## Installation
-#### With HACS
+#### With Marketplace/HACS
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=zubir2k&repository=homeassistant-malaysiaweather&category=integration)
 
 > [!Tip]
-> If you are unable to use the button above, manually search for Malaysia Weather in HACS.
+> If you are unable to use the button above, manually search for Malaysia Weather in Marketplace/HACS.
 
 #### Manual
 1. Copy the `malaysia_weather` directory from `custom_components` in this repository and place inside your Home Assistant's `custom_components` directory.
