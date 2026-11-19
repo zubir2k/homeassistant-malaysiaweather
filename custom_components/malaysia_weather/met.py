@@ -14,7 +14,7 @@ import logging
 from math import asin, cos, radians, sin, sqrt
 import re
 import time
-from typing import Any
+from typing import Any, Final
 from zoneinfo import ZoneInfo
 
 import aiohttp
@@ -37,10 +37,12 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 
-def get_met_tz() -> ZoneInfo:
-    """Return the cached MET Malaysia timezone."""
-    tz = dt_util.get_time_zone(MET_TIMEZONE)
-    return tz if isinstance(tz, ZoneInfo) else ZoneInfo(MET_TIMEZONE)
+MET_TZ: Final = timezone(timedelta(hours=8))
+
+
+def get_met_tz() -> timezone:
+    """Return the cached MET Malaysia timezone (UTC+8)."""
+    return MET_TZ
 
 
 _CACHE_KEY = f"{DOMAIN}_met_cache"
@@ -544,10 +546,3 @@ def parse_observations(
         elif datatype == "PRST_WX_ID":
             data.present_weather_id = value
     return data
-
-
-def __getattr__(name: str) -> Any:
-    """Lazy module attribute fallback for MET_TZ."""
-    if name == "MET_TZ":
-        return get_met_tz()
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
