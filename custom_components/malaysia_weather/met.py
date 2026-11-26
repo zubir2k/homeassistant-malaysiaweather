@@ -1,12 +1,8 @@
 """Client and parsers for MET Malaysia re-exported from python-metmalaysia."""
 from __future__ import annotations
 
-import asyncio
-from datetime import date, datetime, timedelta, timezone
 import logging
-from typing import Any, Final
 
-import aiohttp
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
