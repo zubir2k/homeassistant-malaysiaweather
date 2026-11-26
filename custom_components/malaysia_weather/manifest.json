@@ -16,6 +16,8 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/zubir2k/homeassistant-malaysiaweather/issues",
   "quality_scale": "bronze",
-  "requirements": [],
-  "version": "1.1.4"
+  "requirements": [
+    "python-metmalaysia>=0.1.0"
+  ],
+  "version": "1.2.0"
 }
