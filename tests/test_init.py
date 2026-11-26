@@ -264,7 +264,7 @@ async def test_key_revoked_creates_repair_issue(
     assert ir.async_get(hass).async_get_issue(DOMAIN, issue_id) is None
 
     aioclient_mock.clear_requests()
-    hass.data.pop("malaysia_weather_met_cache", None)  # skip Cache-Control reuse
+    entry.runtime_data.met.client._cache.clear()  # skip Cache-Control reuse
     mock_basic(aioclient_mock)
     aioclient_mock.get(f"{MET}/data", status=401, json={"detail": "Invalid token."})
     await entry.runtime_data.met.async_refresh()
@@ -281,7 +281,7 @@ async def test_key_revoked_creates_repair_issue(
 
     # Key works again: issue cleared
     aioclient_mock.clear_requests()
-    hass.data.pop("malaysia_weather_met_cache", None)
+    entry.runtime_data.met.client._cache.clear()
     mock_basic(aioclient_mock)
     mock_met(aioclient_mock)
     await entry.runtime_data.met.async_refresh()
