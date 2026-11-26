@@ -1,6 +1,7 @@
 """Client and parsers for MET Malaysia re-exported from python-metmalaysia."""
 from __future__ import annotations
 
+import asyncio as asyncio
 import logging
 
 from homeassistant.core import HomeAssistant
